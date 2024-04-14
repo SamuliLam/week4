@@ -9,8 +9,8 @@ import {
 
 const userRoutes = express.Router();
 
-userRoutes.route('/user').get(getUsers).post(postUser);
+userRoutes.route('/').get(getUsers).post(postUser);
 
-userRoutes.route('/user/:id').get(getUserById).put(putUser).delete(deleteUser);
+userRoutes.route('/:id').get(getUserById).put(putUser).delete(deleteUser);
 
 export default userRoutes;

@@ -1,10 +1,10 @@
-import {addCat, findCatById, listAllCats,findCatsByUserId, removeCat, modifyCat} from "../models/cat-model.js";
+import {addCat, findCatById, listAllCats, findCatsByUserId, removeCat, modifyCat} from "../models/cat-model.js";
 
-const getCat = (req, res) => {
-    res.json(listAllCats());
+const getCat = async (req, res) => {
+    res.json(await listAllCats());
 };
 
-const getCatById = (req, res) => {
+const getCatById = async (req, res) => {
     const cat = findCatById(req.params.id);
     if (cat) {
         res.json(cat);
@@ -22,7 +22,7 @@ const getCatsByUserId = async (req, res) => {
     }
 };
 
-const postCat = (req, res) => {
+const postCat = async (req, res) => {
     const result = addCat(req.body, req.file.filename);
     if (result.cat_id) {
         res.status(201);

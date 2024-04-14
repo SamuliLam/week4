@@ -1,8 +1,14 @@
-import app from '../app.js';
+import express from 'express';
+import catRouter from './routes/cat-routes.js';
+import { getCatsByUserId } from './controllers/cat-controller.js';
+import userRouter from './routes/user-routes.js';
+import authRouter from './routes/auth-routes.js';
 
-const hostname = '127.0.0.1';
-const port = 3000;
+const router = express.Router();
+router.route('/user/:user_id').get(getCatsByUserId);
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+router.use('/cats', catRouter);
+router.use('/users', userRouter);
+router.use('/auth', authRouter);
+
+export default router;

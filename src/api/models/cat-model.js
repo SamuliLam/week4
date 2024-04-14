@@ -1,15 +1,16 @@
-// Note: db functions are async and must be called with await from the controller
-// How to handle errors in controller?
 import promisePool from '../../utils/database.js';
 
 const listAllCats = async () => {
-    const [rows] = await promisePool.query('SELECT * FROM cats');
-    console.log('rows', rows);
+    const [rows] = await promisePool.query(`
+    SELECT wsk_cats.*, wsk_users.name AS owner_name
+    FROM wsk_cats
+    JOIN wsk_users ON wsk_cats.owner = wsk_users.user_id
+  `);
     return rows;
 };
 
 const findCatById = async (id) => {
-    const [rows] = await promisePool.execute('SELECT * FROM cats WHERE cats_id = ?', [id]);
+    const [rows] = await promisePool.execute('SELECT * FROM wsk_cats WHERE cat_id = ?', [id]);
     console.log('rows', rows);
     if (rows.length === 0) {
         return false;
@@ -19,9 +20,17 @@ const findCatById = async (id) => {
 
 const addCat = async (cat) => {
     const {cat_name, weight, owner, filename, birthdate} = cat;
-    const sql = `INSERT INTO cats (cat_name, weight, owner, filename, birthdate)
+    console.log('cat', cat);
+    const sql = `INSERT INTO wsk_cats (cat_name, weight, owner, filename, birthdate)
                VALUES (?, ?, ?, ?, ?)`;
-    const params = [cat_name, weight, owner, filename, birthdate];
+    const params = [cat_name, weight, owner, filename, birthdate].map((item) => {
+        console.log('item', item);
+        if (item === undefined) {
+            return null;
+        } else {
+            return item;
+        }
+    })
     const rows = await promisePool.execute(sql, params);
     console.log('rows', rows);
     if (rows[0].affectedRows === 0) {
@@ -31,7 +40,7 @@ const addCat = async (cat) => {
 };
 
 const modifyCat = async (cat, id) => {
-    const sql = promisePool.format(`UPDATE cats SET ? WHERE cat_id = ?`, [cat, id]);
+    const sql = promisePool.format(`UPDATE wsk_cats SET ? WHERE cat_id = ?`, [cat, id]);
     const rows = await promisePool.execute(sql);
     console.log('rows', rows);
     if (rows[0].affectedRows === 0) {
@@ -41,7 +50,7 @@ const modifyCat = async (cat, id) => {
 };
 
 const removeCat = async (id) => {
-    const [rows] = await promisePool.execute('DELETE FROM cats WHERE cat_id = ?', [id]);
+    const [rows] = await promisePool.execute('DELETE FROM wsk_cats WHERE cat_id = ?', [id]);
     console.log('rows', rows);
     if (rows.affectedRows === 0) {
         return false;
@@ -50,9 +59,9 @@ const removeCat = async (id) => {
 };
 
 const findCatsByUserId = async (userId) => {
-    const [rows] = await promisePool.execute('SELECT * FROM cats WHERE owner = ?', [userId]);
+    const [rows] = await promisePool.execute(
+        'SELECT * FROM wsk_cats WHERE owner = ?', [userId]);
     return rows;
 };
 
 export {listAllCats, findCatById, addCat, modifyCat, removeCat, findCatsByUserId};
-
