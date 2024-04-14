@@ -5,8 +5,12 @@ import {
     postUser,
     putUser,
     deleteUser,
-    } from '../controllers/user-controller.js';
+} from '../controllers/user-controller.js';
 
-const userRouter = express.Router();
+const userRoutes = express.Router();
 
-userRouter.route
+userRoutes.route('/user').get(getUsers).post(postUser);
+
+userRoutes.route('/user/:id').get(getUserById).put(putUser).delete(deleteUser);
+
+export default userRoutes;

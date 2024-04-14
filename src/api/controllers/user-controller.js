@@ -1,9 +1,11 @@
-const getUser = (req, res) => {
+import { listAllUsers, findUserById, addUser } from '../models/user-model.js';
+
+const getUsers = (req, res) => {
     res.json(listAllUsers());
 };
 
 const getUserById = (req, res) => {
-    const user = getUserById(req.params.id);
+    const user = findUserById(req.params.id);
     if (user) {
         res.json(user);
     } else {
@@ -20,3 +22,15 @@ const postUser = (req, res) => {
         res.sendStatus(400);
     }
 }
+
+const putUser = (req, res) => {
+    res.json({message: 'User item updated.'});
+    res.sendStatus(200);
+}
+
+const deleteUser = (req, res) => {
+    res.json({message: 'User item deleted.'});
+    res.sendStatus(200);
+}
+
+export { getUsers, getUserById, postUser, putUser, deleteUser };
