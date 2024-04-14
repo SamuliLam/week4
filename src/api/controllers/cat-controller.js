@@ -1,4 +1,4 @@
-import {addCat, findCatById, listAllCats} from "../models/cat-model.js";
+import {addCat, findCatById, listAllCats,findCatsByUserId, removeCat, modifyCat} from "../models/cat-model.js";
 
 const getCat = (req, res) => {
     res.json(listAllCats());
@@ -8,6 +8,15 @@ const getCatById = (req, res) => {
     const cat = findCatById(req.params.id);
     if (cat) {
         res.json(cat);
+    } else {
+        res.sendStatus(404);
+    }
+};
+
+const getCatsByUserId = async (req, res) => {
+    const cats = await findCatsByUserId(req.params.id);
+    if (cats.length > 0) {
+        res.json(cats);
     } else {
         res.sendStatus(404);
     }
@@ -24,14 +33,22 @@ const postCat = (req, res) => {
     }
 };
 
-const putCat = (req, res) => {
-    res.json({message: 'Cat item updated.'});
-    res.sendStatus(200);
-};
+const putCat = async (req, res) => {
+    const result = await modifyCat(req.body, req.params.id);
+    if (result.message === 'success') {
+        res.json({message: 'Cat item updated.'});
+    } else {
+        res.sendStatus(400);
+    }
+}
 
-const deleteCat = (req, res) => {
-    res.json({message: 'Cat item deleted.'});
-    res.sendStatus(200);
-};
+const deleteCat = async (req, res) => {
+    const result = await removeCat(req.params.id);
+    if (result.message === 'success') {
+        res.json({message: 'Cat item deleted.'});
+    } else {
+        res.sendStatus(400);
+    }
+}
 
-export {getCat, getCatById, postCat, putCat, deleteCat};
+export {getCat, getCatById, postCat, putCat, deleteCat, getCatsByUserId};
