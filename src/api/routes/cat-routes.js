@@ -7,16 +7,15 @@ import {
     postCat,
     putCat,
     deleteCat,
-    getCatsByUserId
+    getCatsByUserId,
 } from '../controllers/cat-controller.js';
 
-import {createThumbnail, authenticateToken} from "../../middlewares.js";
+import {createThumbnail, authenticateToken, validationErrors, upload} from "../../middlewares.js";
 
 
 const catRoutes = express.Router();
-const upload = multer({dest: 'uploads/'});
 
-catRoutes.route('/').get(getCat).post(upload.single('catImage'), createThumbnail, postCat);
+catRoutes.route('/').get(getCat).post(upload.single('catImage'), createThumbnail, validationErrors, postCat);
 
 catRoutes.route('/:id').get(authenticateToken, getCatById).put(authenticateToken, putCat).delete(authenticateToken, deleteCat);
 
