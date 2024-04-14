@@ -14,9 +14,10 @@ const getCatById = (req, res) => {
 };
 
 const postCat = (req, res) => {
-    const result = addCat(req.body);
+    const result = addCat(req.body, req.file.filename);
     if (result.cat_id) {
         res.status(201);
+        console.log(JSON.stringify(req.body) + ' file data: ' + JSON.stringify(req.file));
         res.json({message: 'New cat added.', result});
     } else {
         res.sendStatus(400);
